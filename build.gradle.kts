@@ -116,6 +116,9 @@ dependencies {
     compileOnly("org.jogamp.jogl:jogl-all-main:2.5.0")
     compileOnly("org.jogamp.gluegen:gluegen-rt-main:2.5.0")
 
+    // Source: https://mvnrepository.com/artifact/org.jbox2d/jbox2d-library
+    implementation("org.jbox2d:jbox2d-library:2.2.1.1")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

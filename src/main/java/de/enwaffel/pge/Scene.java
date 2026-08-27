@@ -1,13 +1,20 @@
 package de.enwaffel.pge;
 
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.World;
+
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class Scene implements Drawable, PGEConstants, InputHandler {
+public abstract class Scene extends ColorConstants implements Drawable, PGEConstants, InputHandler {
 
     public List<SceneObject> objects = new ArrayList<>();
     public List<Camera> cameras = new ArrayList<>(List.of(new Camera()));
     public Camera defaultCamera = cameras.get(0);
+
+    public int physicsVelocityIterations = 6;
+    public int physicsPositionIterations = 2;
+    public World world = new World(new Vec2(0f, 9.81f));
 
     public void add(SceneObject obj) {
         if (obj.getCamera() == null) {
@@ -51,15 +58,17 @@ public abstract class Scene implements Drawable, PGEConstants, InputHandler {
         for (SceneObject obj : objects) {
             obj.update(delta);
         }
+
+        world.step(delta, physicsVelocityIterations, physicsPositionIterations);
     }
 
     public abstract void disable();
 
-    public void onKeybindingPress(String name) {
+    public void onKeybindPress(String name) {
         // Do nothing
     }
 
-    public void onKeybindingRelease(String name) {
+    public void onKeybindRelease(String name) {
         // Do nothing
     }
 
