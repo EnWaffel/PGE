@@ -91,11 +91,7 @@ public class Color {
         return new Color(r * 255f, g * 255f, b * 255f, alpha);
     }
 
-    public static Color fromHSB(float h, float s, float v) {
-        return fromHSB(h, s, v, 255f);
-    }
-
-    public void apply(PGraphics pg) {
+    public void applyFill(PGraphics pg) {
         pg.fill(r, g, b, a);
     }
 
@@ -112,9 +108,30 @@ public class Color {
         return ((int) a << 24) | ((int) r << 16) | ((int) g << 8) | (int) b;
     }
 
+    public Color copy() {
+        return new Color(r, g, b, a);
+    }
+
+    public Color copy(float newAlpha) {
+        return new Color(r, g, b, newAlpha);
+    }
+
     @Override
     public String toString() {
         return String.format("#%02X%02X%02X%02X", (int) r, (int) g, (int) b, (int) a);
+    }
+
+    public static Color fromHSB(float h, float s, float v) {
+        return fromHSB(h, s, v, 255f);
+    }
+
+    public static Color random() {
+        return new Color(
+                Game.randomFloat() * 255f,
+                Game.randomFloat() * 255f,
+                Game.randomFloat() * 255f,
+                255f
+        );
     }
 
 }

@@ -46,7 +46,7 @@ public class Button implements SceneObject {
         PGraphics pg = ctx.pg();
 
         pg.push();
-        curColor.apply(pg);
+        curColor.applyFill(pg);
         pg.translate(pos.x, pos.y);
         pg.rotate(PApplet.radians(rotation));
 

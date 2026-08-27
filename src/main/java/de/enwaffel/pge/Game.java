@@ -2,9 +2,11 @@ package de.enwaffel.pge;
 
 import com.jogamp.newt.opengl.GLWindow;
 import processing.core.PApplet;
+import processing.core.PVector;
 import processing.event.MouseEvent;
 
 import java.nio.file.Path;
+import java.util.Random;
 
 public class Game {
 
@@ -12,7 +14,11 @@ public class Game {
 
     public static PApplet APP = null;
     public static Scene CUR_SCENE = null;
+    public static PVector ORIGIN = new PVector(0.5f, 0.5f);
 
+    static boolean WINDOW_TRANSPARENT = false;
+
+    private static final Random rng = new Random();
     private static int last = 0;
     private static boolean inStep = false;
     private static float windowTransparency = 255f;
@@ -28,13 +34,18 @@ public class Game {
     }
 
     public static void changeScene(Scene newScene) {
-        if (CUR_SCENE != null) {
-            CUR_SCENE.disable();
-            if (inStep) throw new EscapeException();
-        }
+        try {
+            if (CUR_SCENE != null) {
+                CUR_SCENE.disable();
+                if (inStep) throw new EscapeException();
+            }
 
-        CUR_SCENE = newScene;
-        CUR_SCENE.enable();
+            CUR_SCENE = newScene;
+            CUR_SCENE.enable();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace(System.err);
+            throw throwable;
+        }
     }
 
     public static void step() {
@@ -80,6 +91,48 @@ public class Game {
         windowTransparency = transparency;
     }
 
+    public static float randomFloat() {
+        return rng.nextFloat();
+    }
+
+    public static float randomFloat(float max) {
+        return rng.nextFloat(max);
+    }
+
+    public static float randomFloat(float min, float max) {
+        return (float) randomNumber(min, max);
+    }
+
+    public static int randomInt() {
+        return rng.nextInt();
+    }
+
+    public static int randomInt(int max) {
+        return rng.nextInt(max);
+    }
+
+    public static int randomInt(int min, int max) {
+        return (int) Math.round(randomNumber(min, max));
+    }
+
+    public static double randomNumber(double min, double max) {
+        return min + getRNG().nextDouble() * (max - min);
+    }
+
+    public static Random getRNG() {
+        return rng;
+    }
+
+    public static void setWindowTransparent() {
+        WINDOW_TRANSPARENT = true;
+        setWindowTransparency(0f);
+    }
+
+    public static void setWindowOpaque() {
+        WINDOW_TRANSPARENT = false;
+        setWindowTransparency(255f);
+    }
+
     public static void keyPressed() {
         if (CUR_SCENE == null) return;
         Keybinds.onKeyPress(APP.keyCode);
@@ -114,12 +167,12 @@ public class Game {
 
     static void handleKeybindingPress(String name) {
         if (CUR_SCENE == null) return;
-        CUR_SCENE.onKeybindingPress(name);
+        CUR_SCENE.onKeybindPress(name);
     }
 
     static void handleKeybindingRelease(String name) {
         if (CUR_SCENE == null) return;
-        CUR_SCENE.onKeybindingRelease(name);
+        CUR_SCENE.onKeybindRelease(name);
     }
 
     static GLWindow getNativeWindow() {

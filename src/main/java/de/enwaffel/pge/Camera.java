@@ -7,8 +7,6 @@ import processing.opengl.PShader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static processing.core.PConstants.P2D;
-
 public class Camera extends Tweenable implements Drawable, Updatable {
 
     final List<SceneObject> objects = new ArrayList<>();
@@ -18,12 +16,13 @@ public class Camera extends Tweenable implements Drawable, Updatable {
     public float zoom = 1f;
     public float rotation = 0f;
     public PShader shader = null;
+    public PVector origin = Game.ORIGIN;
 
     private SceneObject target = null;
     private float followLag = 0f;
 
     public Camera() {
-        pg = Game.APP.createGraphics(Game.APP.width, Game.APP.height, P2D);
+        pg = Game.APP.createGraphics(Game.APP.width, Game.APP.height, Game.RENDERER_2D);
     }
 
     public void add(SceneObject obj) {
@@ -46,7 +45,7 @@ public class Camera extends Tweenable implements Drawable, Updatable {
         }
 
         pg.pushMatrix();
-        pg.translate(pg.width / 2f, pg.height / 2f);
+        pg.translate(pg.width * origin.x, pg.height * origin.y);
         pg.scale(zoom);
         pg.rotate(rotation);
         pg.translate(-pos.x, -pos.y);

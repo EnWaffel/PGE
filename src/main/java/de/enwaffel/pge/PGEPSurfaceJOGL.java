@@ -13,6 +13,7 @@ public class PGEPSurfaceJOGL extends PSurfaceJOGL {
 
     @Override
     protected void initGL() {
+        graphics.smooth = 8;
         super.initGL();
 
         GLCapabilitiesImmutable current = pgl.getCaps();

@@ -10,11 +10,12 @@ public class Sprite extends Tweenable implements SceneObject {
     public PVector pos = new PVector();
     public PVector size = new PVector();
     public PVector scale = new PVector(1f, 1f);
-    public PVector origin = new PVector(0.5f, 0.5f);
+    public PVector origin = Game.ORIGIN;
     public float rotation = 0;
     public PImage image = null;
     public Camera camera = null;
     public boolean visible = true;
+    public Color paintColor = new Color(); // not just "color" because color is a reserved keyword in Processing
 
     public Sprite() {}
 
@@ -36,6 +37,10 @@ public class Sprite extends Tweenable implements SceneObject {
         if (image != null) {
             pg.scale(size.x / (float)image.width, size.y / (float)image.height);
             pg.image(image, 0, 0);
+        } else {
+            pg.noStroke();
+            paintColor.applyFill(pg);
+            pg.rect(0, 0, size.x, size.y);
         }
 
         pg.pop();
@@ -144,6 +149,19 @@ public class Sprite extends Tweenable implements SceneObject {
         if (axis.equals(Axis.X) || axis.equals(Axis.XY)) target.x = Game.APP.width / 2f;
         if (axis.equals(Axis.Y) || axis.equals(Axis.XY)) target.y = Game.APP.height / 2f;
         setCenter(target);
+    }
+
+    public boolean isCollidingWith(Sprite other) {
+        return MathUtils.isIntersection(
+                pos.x,
+                pos.y,
+                size.x,
+                size.y,
+                other.pos.x,
+                other.pos.y,
+                other.size.x,
+                other.size.y
+        );
     }
 
     @Override
