@@ -84,12 +84,20 @@ public abstract class Scene extends ColorConstants implements Drawable, PGEConst
         for (SceneObject obj : objects) {
             obj.onKeyPress(key);
         }
+
+        for (Camera camera : cameras) {
+            camera.onKeyPress(key);
+        }
     }
 
     @Override
     public void onKeyRelease(char key) {
         for (SceneObject obj : objects) {
             obj.onKeyRelease(key);
+        }
+
+        for (Camera camera : cameras) {
+            camera.onKeyRelease(key);
         }
     }
 
@@ -98,12 +106,20 @@ public abstract class Scene extends ColorConstants implements Drawable, PGEConst
         for (SceneObject obj : objects) {
             obj.onMousePress(button);
         }
+
+        for (Camera camera : cameras) {
+            camera.onMousePress(button);
+        }
     }
 
     @Override
     public void onMouseRelease(int button) {
         for (SceneObject obj : objects) {
             obj.onMouseRelease(button);
+        }
+
+        for (Camera camera : cameras) {
+            camera.onMouseRelease(button);
         }
     }
 
@@ -112,12 +128,20 @@ public abstract class Scene extends ColorConstants implements Drawable, PGEConst
         for (SceneObject obj : objects) {
             obj.onMouseMove(x, y);
         }
+
+        for (Camera camera : cameras) {
+            camera.onMouseMove(x, y);
+        }
     }
 
     @Override
     public void onMouseWheel(float distance) {
         for (SceneObject obj : objects) {
             obj.onMouseWheel(distance);
+        }
+
+        for (Camera camera : cameras) {
+            camera.onMouseWheel(distance);
         }
     }
 
