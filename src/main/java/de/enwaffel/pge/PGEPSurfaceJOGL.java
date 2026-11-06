@@ -19,7 +19,7 @@ public class PGEPSurfaceJOGL extends PSurfaceJOGL {
         GLCapabilitiesImmutable current = pgl.getCaps();
         GLCapabilities caps = (GLCapabilities) current;
 
-        caps.setBackgroundOpaque(false);
+        caps.setBackgroundOpaque(!Game.WINDOW_TRANSPARENT);
 
         pgl.setCaps(caps);
     }

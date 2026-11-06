@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Game {
 
-    public static final String RENDERER_2D = "de.enwaffel.pge.PGERenderer";
+    public static final String RENDERER = "de.enwaffel.pge.PGERenderer";
 
     public static PApplet APP = null;
     public static Scene CUR_SCENE = null;
@@ -22,6 +22,8 @@ public class Game {
     private static int last = 0;
     private static boolean inStep = false;
     private static float windowTransparency = 255f;
+    private static boolean cursorLocked = false;
+    private static float virtualX, virtualY;
 
     private Game() {}
 
@@ -155,14 +157,63 @@ public class Game {
         CUR_SCENE.onMouseRelease(APP.mouseButton);
     }
 
-    public static void mouseMoved() {
-        if (CUR_SCENE == null) return;
-        CUR_SCENE.onMouseMove(APP.mouseX, APP.mouseY);
-    }
-
     public static void mouseWheel(MouseEvent event) {
         if (CUR_SCENE == null) return;
         CUR_SCENE.onMouseWheel(event.getCount());
+    }
+
+    public static void mouseMoved() {
+        if (CUR_SCENE == null) return;
+
+        if (!cursorLocked) {
+            CUR_SCENE.onMouseMove(APP.mouseX, APP.mouseY);
+            return;
+        }
+
+        float dx = APP.mouseX - APP.width / 2f;
+        float dy = APP.mouseY - APP.height / 2f;
+        if (dx == 0 && dy == 0) return;
+
+        virtualX += dx;
+        virtualY += dy;
+        CUR_SCENE.onMouseMove(virtualX, virtualY);
+        recenterCursor();
+    }
+
+    public static void mouseDragged() {
+        mouseMoved();
+    }
+
+    public static void lockCursor() {
+        GLWindow wnd = getNativeWindow();
+        virtualX = APP.mouseX;
+        virtualY = APP.mouseY;
+        cursorLocked = true;
+        wnd.setPointerVisible(false);
+        wnd.confinePointer(true);
+        wnd.requestFocus();
+        recenterCursor();
+    }
+
+    public static void unlockCursor() {
+        cursorLocked = false;
+        GLWindow wnd = getNativeWindow();
+        wnd.setPointerVisible(true);
+        wnd.confinePointer(false);
+    }
+
+    private static void recenterCursor() {
+        GLWindow wnd = getNativeWindow();
+        float scale = wnd.getWidth() / (float) APP.width;
+        wnd.warpPointer((int) (APP.width / 2f * scale), (int) (APP.height / 2f * scale));
+    }
+
+    public static void setWindowPosition(int x, int y) {
+        getNativeWindow().setPosition(x, y);
+    }
+
+    static GLWindow getNativeWindow() {
+        return (GLWindow) APP.getSurface().getNative();
     }
 
     static void handleKeybindingPress(String name) {
@@ -173,10 +224,6 @@ public class Game {
     static void handleKeybindingRelease(String name) {
         if (CUR_SCENE == null) return;
         CUR_SCENE.onKeybindRelease(name);
-    }
-
-    static GLWindow getNativeWindow() {
-        return (GLWindow) APP.getSurface().getNative();
     }
 
     static class EscapeException extends RuntimeException { }
