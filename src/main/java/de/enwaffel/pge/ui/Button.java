@@ -33,11 +33,11 @@ public class Button implements SceneObject {
     @Override
     public void update(float delta) {
         if (hovering) {
-            curColor = curColor.lerp(hoverColor, getAnimationSpeed(delta));
+            curColor = curColor.lerp(hoverColor, getLerpPos(delta));
         } if (pressed) {
-            curColor = curColor.lerp(pressColor, getAnimationSpeed(delta));
+            curColor = curColor.lerp(pressColor, getLerpPos(delta));
         } else {
-            curColor = curColor.lerp(normalColor, getAnimationSpeed(delta));
+            curColor = curColor.lerp(normalColor, getLerpPos(delta));
         }
     }
 
@@ -55,7 +55,7 @@ public class Button implements SceneObject {
         pg.pop();
     }
 
-    private float getAnimationSpeed(float delta) {
+    private float getLerpPos(float delta) {
         return animationSpeed < 0 ? 1 : animationSpeed * delta;
     }
 
