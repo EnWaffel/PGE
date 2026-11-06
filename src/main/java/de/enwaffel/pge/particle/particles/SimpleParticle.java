@@ -19,6 +19,7 @@ public abstract class SimpleParticle extends Particle {
     protected final List<Float> scales;
     protected final int blendMode;
 
+    @SuppressWarnings("unchecked")
     protected SimpleParticle(ParticleTemplate template, Properties properties) {
         super(template);
 
