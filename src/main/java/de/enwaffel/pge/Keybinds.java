@@ -51,7 +51,7 @@ public final class Keybinds {
 
     public static boolean justReleased(String name) {
         if (!BINDINGS_BY_NAME.containsKey(name)) return false;
-        return BINDINGS_BY_NAME.get(name).justPressed;
+        return BINDINGS_BY_NAME.get(name).justReleased;
     }
 
     static void onKeyPress(int key) {
