@@ -42,7 +42,7 @@ public final class SoundSystem {
                 source.update(delta);
             }
 
-            sources.removeIf(s -> !s.isPlaying());
+            sources.removeIf(s -> !s.isPlaying() && !s.isPaused());
         }
     }
 

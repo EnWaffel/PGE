@@ -7,6 +7,7 @@ import processing.sound.SoundFile;
 public class SoundSource implements Updatable {
 
     private final SoundFile file;
+    private boolean paused = false;
 
     public PVector pos = new PVector();
     public float volume = 1f;
@@ -16,10 +17,12 @@ public class SoundSource implements Updatable {
     }
 
     public void play() {
+        paused = false;
         file.play();
     }
 
     public void pause() {
+        paused = true;
         file.pause();
     }
 
@@ -41,6 +44,10 @@ public class SoundSource implements Updatable {
 
     public boolean isPlaying() {
         return file.isPlaying();
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     @Override
