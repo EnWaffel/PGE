@@ -10,7 +10,7 @@ public class Sprite extends Tweenable implements SceneObject {
     public PVector pos = new PVector();
     public PVector size = new PVector();
     public PVector scale = new PVector(1f, 1f);
-    public PVector origin = Game.ORIGIN;
+    public PVector origin = Game.ORIGIN.copy();
     public float rotation = 0;
     public PImage image = null;
     public Camera camera = null;
