@@ -151,17 +151,32 @@ public class Sprite extends Tweenable implements SceneObject {
         setCenter(target);
     }
 
+    public Rect getBounds() {
+        float rad = PApplet.radians(rotation);
+        float cos = PApplet.cos(rad);
+        float sin = PApplet.sin(rad);
+        float ox = size.x * origin.x;
+        float oy = size.y * origin.y;
+
+        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+
+        for (int i = 0; i < 4; i++) {
+            float lx = ((i & 1) == 0 ? 0 : size.x) - ox;
+            float ly = (i < 2 ? 0 : size.y) - oy;
+
+            float wx = pos.x + (lx * cos - ly * sin) * scale.x;
+            float wy = pos.y + (lx * sin + ly * cos) * scale.y;
+
+            minX = Math.min(minX, wx);  maxX = Math.max(maxX, wx);
+            minY = Math.min(minY, wy);  maxY = Math.max(maxY, wy);
+        }
+
+        return new Rect(minX, minY, maxX - minX, maxY - minY);
+    }
+
     public boolean isCollidingWith(Sprite other) {
-        return MathUtils.isIntersection(
-                pos.x,
-                pos.y,
-                size.x,
-                size.y,
-                other.pos.x,
-                other.pos.y,
-                other.size.x,
-                other.size.y
-        );
+        return getBounds().intersects(other.getBounds());
     }
 
     @Override
