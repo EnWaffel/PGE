@@ -242,7 +242,7 @@ public class ParticleTemplate {
         }
 
         public Builder _color(float gray, float alpha) {
-            addColorProperty(new Color(gray));
+            addColorProperty(new Color(gray, alpha));
             return this;
         }
 
