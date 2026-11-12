@@ -27,8 +27,20 @@ public class SoundSource implements Updatable {
         file.stop();
     }
 
+    public void setRate(float v) {
+        file.rate(v);
+    }
+
+    public void jumpTo(float v) {
+        file.jump(v);
+    }
+
     public float getTimePosition() {
         return file.position();
+    }
+
+    public boolean isPlaying() {
+        return file.isPlaying();
     }
 
     @Override

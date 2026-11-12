@@ -41,6 +41,8 @@ public final class SoundSystem {
             for (SoundSource source : sources) {
                 source.update(delta);
             }
+
+            sources.removeIf(s -> !s.isPlaying());
         }
     }
 
