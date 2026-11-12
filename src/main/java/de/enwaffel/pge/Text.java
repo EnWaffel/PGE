@@ -17,6 +17,7 @@ public class Text extends Tweenable implements SceneObject {
 
     private String text = "";
     private float textSize = 12f;
+    private float ascent;
 
     public Text() {}
 
@@ -34,15 +35,13 @@ public class Text extends Tweenable implements SceneObject {
 
         PFont oldFont = pg.textFont;
         float oldSize = pg.textSize;
+
         pg.textSize(textSize);
+        ascent = pg.textAscent();
+        size = new PVector(pg.textWidth(text), ascent + pg.textDescent());
 
-        size = new PVector(
-                pg.textWidth(text),
-                pg.textAscent()
-        );
-
-        pg.textSize(oldSize);
         if (oldFont != null) pg.textFont(oldFont);
+        pg.textSize(oldSize);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class Text extends Tweenable implements SceneObject {
         pg.translate(-(size.x * origin.x), -(size.y * origin.y));
 
         pg.textSize(textSize);
-        pg.text(text, 0, 0);
+        pg.text(text, 0, ascent);
 
         pg.pop();
     }
