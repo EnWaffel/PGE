@@ -82,11 +82,11 @@ public class Game {
     }
 
     public static void setAlwaysOnTop(boolean alwaysOnTop) {
-        getNativeWindow().setAlwaysOnTop(true);
+        getNativeWindow().setAlwaysOnTop(alwaysOnTop);
     }
 
     public static void setAlwaysOnBottom(boolean alwaysOnBottom) {
-        getNativeWindow().setAlwaysOnBottom(true);
+        getNativeWindow().setAlwaysOnBottom(alwaysOnBottom);
     }
 
     public static void setWindowTransparency(float transparency) {
