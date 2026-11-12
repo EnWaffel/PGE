@@ -29,10 +29,11 @@ public final class Assets {
 
     public static String loadSound(String name, String path) {
         if (SOUNDS.containsKey(name)) return SOUNDS.get(name);
-        new SoundFile(Game.APP, BASE_PATH.resolve(path).toString());
+        String p = BASE_PATH.resolve(path).toString();
+        new SoundFile(Game.APP, p);
 
-        SOUNDS.put(name, path);
-        return path;
+        SOUNDS.put(name, p);
+        return p;
     }
 
     public static String getSound(String name) {
