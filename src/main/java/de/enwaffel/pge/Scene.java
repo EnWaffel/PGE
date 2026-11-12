@@ -4,12 +4,12 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Scene extends ColorConstants implements Drawable, PGEConstants, InputHandler {
 
-    public List<SceneObject> objects = new ArrayList<>();
-    public List<Camera> cameras = new ArrayList<>(List.of(new Camera()));
+    public List<SceneObject> objects = new CopyOnWriteArrayList<>();
+    public List<Camera> cameras = new CopyOnWriteArrayList<>(List.of(new Camera()));
     public Camera defaultCamera = cameras.get(0);
 
     public int physicsVelocityIterations = 6;

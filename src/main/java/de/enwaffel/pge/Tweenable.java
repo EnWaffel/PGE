@@ -1,11 +1,11 @@
 package de.enwaffel.pge;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Tweenable {
 
-    private final List<Tween> tweens = new ArrayList<>();
+    private final List<Tween> tweens = new CopyOnWriteArrayList<>();
 
     public void startTween(Tween tween) {
         tween.start();

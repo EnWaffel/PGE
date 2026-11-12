@@ -5,19 +5,19 @@ import processing.core.PGraphics;
 import processing.core.PVector;
 import processing.opengl.PShader;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Camera extends Tweenable implements Drawable, Updatable, InputHandler {
 
-    final List<SceneObject> objects = new ArrayList<>();
+    final List<SceneObject> objects = new CopyOnWriteArrayList<>();
     private final PGraphics pg;
 
     public PVector pos = new PVector();
     public float zoom = 1f;
     public float rotation = 0f;
     public PShader shader = null;
-    public PVector origin = Game.ORIGIN;
+    public PVector origin = Game.ORIGIN.copy();
 
     public float yaw = -90.0f;
     public float pitch = 0;
