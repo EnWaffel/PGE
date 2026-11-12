@@ -13,7 +13,7 @@ public class SoundSource implements Updatable {
     public float volume = 1f;
 
     public SoundSource(String name) {
-        file = new SoundFile(Game.APP, Assets.getSound(name));
+        file = Assets.getSound(name);
     }
 
     public void play() {
@@ -27,6 +27,7 @@ public class SoundSource implements Updatable {
     }
 
     public void stop() {
+        paused = false;
         file.stop();
     }
 

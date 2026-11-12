@@ -10,7 +10,7 @@ public final class Assets {
 
     public static Path BASE_PATH = Path.of("");
     public static HashMap<String, PImage> IMAGES = new HashMap<>();
-    public static HashMap<String, String> SOUNDS = new HashMap<>();
+    public static HashMap<String, SoundFile> SOUNDS = new HashMap<>();
 
     private Assets() {}
 
@@ -27,16 +27,14 @@ public final class Assets {
         return IMAGES.get(name);
     }
 
-    public static String loadSound(String name, String path) {
+    public static SoundFile loadSound(String name, String path) {
         if (SOUNDS.containsKey(name)) return SOUNDS.get(name);
-        String p = BASE_PATH.resolve(path).toString();
-        new SoundFile(Game.APP, p);
 
-        SOUNDS.put(name, p);
-        return p;
+        SOUNDS.put(name, new SoundFile(Game.APP, BASE_PATH.resolve(path).toString()));
+        return getSound(name);
     }
 
-    public static String getSound(String name) {
+    public static SoundFile getSound(String name) {
         if (!SOUNDS.containsKey(name)) throw new NullPointerException("Audio nicht geladen: " + name);
         return SOUNDS.get(name);
     }
