@@ -8,6 +8,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id("java")
+    id("com.gradleup.shadow") version "8.3.0+"
 }
 
 // Sets the Java version to use for compiling your library.
@@ -118,6 +119,8 @@ dependencies {
 
     // Source: https://mvnrepository.com/artifact/org.jbox2d/jbox2d-library
     implementation("org.jbox2d:jbox2d-library:2.2.1.1")
+    // Source: https://mvnrepository.com/artifact/org.json/json
+    implementation("org.json:json:20260814")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -125,6 +128,17 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.shadowJar {
+    dependencies {
+        // Source: https://mvnrepository.com/artifact/org.json/json
+        dependency(":org.json:json:20260814")
+    }
 }
 
 //==============================

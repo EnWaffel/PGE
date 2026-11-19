@@ -1,9 +1,15 @@
 package de.enwaffel.pge;
 
+import de.enwaffel.pge.atlas.AtlasFrame;
+import de.enwaffel.pge.atlas.TextureAtlas;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Sprite extends Tweenable implements SceneObject {
 
@@ -13,9 +19,14 @@ public class Sprite extends Tweenable implements SceneObject {
     public PVector origin = Game.ORIGIN.copy();
     public float rotation = 0;
     public PImage image = null;
+    public TextureAtlas textureAtlas = null;
     public Camera camera = null;
     public boolean visible = true;
-    public Color paintColor = new Color(); // not just "color" because color is a reserved keyword in Processing
+    public Color paintColor = new Color(); // not just "color" because it's a reserved keyword in Processing
+
+    private final Map<String, Animation> animations = new HashMap<>();
+    private Animation curAnim = null;
+    private boolean animPlaying = false;
 
     public Sprite() {}
 
@@ -24,23 +35,90 @@ public class Sprite extends Tweenable implements SceneObject {
         size = new PVector(image.width, image.height);
     }
 
+    public Sprite(TextureAtlas textureAtlas) {
+        this.textureAtlas = textureAtlas;
+    }
+
+    public void addAnimationByPrefix(String name, String prefix, int fps, boolean loop) {
+        if (textureAtlas == null) {
+            System.err.println("Can't add animation: missing texture atlas");
+            return;
+        }
+        if (animations.containsKey(name)) {
+            System.err.println("Can't add animation: already exists: " + name);
+            return;
+        }
+
+        List<AtlasFrame> frames = textureAtlas.getFramesByPrefix(prefix);
+        if (frames.isEmpty()) {
+            System.err.println("Can't add animation: not found in atlas: " + prefix);
+            return;
+        }
+
+        animations.put(
+                name,
+                new Animation(
+                        frames,
+                        fps,
+                        loop
+                )
+        );
+    }
+
+    public void playAnimation(String name) {
+        if (!animations.containsKey(name)) {
+            System.err.println("Can't play animation: not found: " + name);
+            return;
+        }
+
+        curAnim = animations.get(name);
+        curAnim.play();
+        animPlaying = true;
+    }
+
+    public void stopAnimation() {
+        animPlaying = false;
+        curAnim = null;
+    }
+
     @Override
     public void draw(DrawContext ctx) {
         PGraphics pg = ctx.pg();
 
+        AtlasFrame curFrame = curAnim != null ? curAnim.getCurrentFrame() : null;
+
+        float w = size.x, h = size.y;
+        float frameRot = 0f;
+        if (curFrame != null) {
+            w = curFrame.sourceSize().x;
+            h = curFrame.sourceSize().y;
+            size.set(w, h);
+
+            frameRot = curFrame.rotation();
+        }
+
         pg.push();
         pg.translate(pos.x, pos.y);
         pg.scale(scale.x, scale.y);
-        pg.rotate(PApplet.radians(rotation));
-        pg.translate(-(size.x * origin.x), -(size.y * origin.y));
+        pg.rotate(PApplet.radians(rotation + frameRot));
+        pg.translate(-(w * origin.x), -(h * origin.y));
 
-        if (image != null) {
-            pg.scale(size.x / (float)image.width, size.y / (float)image.height);
+        if (curFrame != null) {
+            int sx = (int) curFrame.framePos().x;
+            int sy = (int) curFrame.framePos().y;
+            int sw = (int) curFrame.frameSize().x;
+            int sh = (int) curFrame.frameSize().y;
+
+            pg.image(textureAtlas.getImage(),
+                    curFrame.trimOffset().x, curFrame.trimOffset().y, sw, sh,
+                    sx, sy, sx + sw, sy + sh);
+        } else if (image != null) {
+            pg.scale(w / (float) image.width, h / (float) image.height);
             pg.image(image, 0, 0);
         } else {
             pg.noStroke();
             paintColor.applyFill(pg);
-            pg.rect(0, 0, size.x, size.y);
+            pg.rect(0, 0, w, h);
         }
 
         pg.pop();
@@ -49,6 +127,10 @@ public class Sprite extends Tweenable implements SceneObject {
     @Override
     public void update(float delta) {
         super.update(delta);
+
+        if (curAnim != null) {
+            curAnim.update(delta);
+        }
     }
 
     public void tweenPosition(float targetX, float targetY, float duration, Easing.EasingFunc func) {
@@ -128,6 +210,14 @@ public class Sprite extends Tweenable implements SceneObject {
     @Override
     public PVector getPosition() {
         return pos;
+    }
+
+    public boolean isAnimationPlaying() {
+        return animPlaying;
+    }
+
+    public Animation getPlayingAnimation() {
+        return curAnim;
     }
 
     public void setCenter(PVector worldCenter) {
